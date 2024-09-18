@@ -1,0 +1,12 @@
+title "View Recipe"
+Actor User
+participant "Front end" as FE
+participant "Back end" as BE
+database "Database" as DB
+
+User -> FE: Click on Recipe
+FE -> BE: GetRecipe(selectedRecipe)
+BE -> DB: GetRecipe(selectedRecipe)
+DB --> BE: Recipe
+BE --> FE: Recipe
+FE -> FE: ShowRecipe(Recipe)
