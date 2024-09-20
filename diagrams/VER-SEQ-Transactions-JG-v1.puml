@@ -1,0 +1,74 @@
+title "View Recipe"
+Actor User
+participant "Front end" as FE
+participant "Back end" as BE
+database "Database" as DB
+
+activate FE
+activate BE
+activate DB
+
+==Transaction: Show Recipe==
+User -> FE: Click on Recipe
+FE -> BE: GetRecipe(selectedRecipe)
+BE -> DB: GetRecipe(selectedRecipe)
+DB --> BE: Recipe
+BE --> FE: Recipe
+FE -> FE: ShowRecipe(Recipe)
+==Transaction: View recipe instructions==
+User -> FE: Click on instructions
+FE -> BE: GetInstructions()
+FE -> FE: ShowInstructions()
+==Transaction: View comments==
+User -> FE: Click on comments
+FE -> BE: GetComments()
+FE -> FE: ShowComments()
+==Transaction: Add items to shopping cart==
+User -> FE: Click on ingredients
+FE -> BE: GetIngredients()
+FE -> FE: Show ingredients
+User -> FE: Click on add ingredients to shopping cart
+FE -> BE: Add ingredients to shopping cart
+FE -> BE: GetShoppingCartCount()
+FE -> FE: ShowShoppingCartCount()
+==Transaction: View shopping cart==
+User -> FE: Click on shopping cart
+FE -> BE: GetPage(shoppingCart)
+FE -> BE: GetShoppingCartItems()
+FE -> FE: ShowShoppingCartItems()
+==Transaction: Delete item from shopping cart==
+User -> FE: Click on remove item
+FE -> BE: RemoveItem(selectedItem)
+==Transaction: Register==
+User -> FE: Click register button
+FE -> BE: GetForm(Register)
+FE -> FE: ShowForm(Register)
+User -> FE: Fill in form
+User -> FE: Send form
+FE -> BE: Post form
+BE -> BE: ValidateForm
+alt Form has errors
+    BE -> FE: ShowForm(FormResults)
+else Form has no errors
+    BE -> DB: AddUser(user)
+    BE -> FE: ShowPage(Home)
+end
+==Transaction: Login==
+User -> FE: Fill in login form
+User -> FE: Send login form
+FE -> BE: Post form
+BE -> BE: ValidateForm
+activate BE
+BE -> DB: GetUser(email)
+DB --> BE: User
+deactivate BE
+
+alt Form has errors
+    BE -> FE: ShowForm(FormResults)
+else Form has no errors
+    BE -> BE: SetSessionUser
+    BE -> FE: ShowPage(Home)
+end
+==Transaction: Place comment==
+note left FE: "include Show Recipe -> show comments"
+User -> FE: Press comment button
